@@ -8,6 +8,9 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
 
+
+#define AS(keycode) &as LS(keycode) keycode
+
 / {
     chosen {
         zmk,physical-layout = &foostan_corne_5col_layout;
@@ -17,68 +20,71 @@
         as: auto_shift {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
-            tapping-term-ms = <200>;
-            quick-tap-ms = <0>;
+            tapping_term_ms = <200>;
+            quick_tap_ms = <0>;
             flavor = "tap-preferred";
             bindings = <&kp>, <&kp>;
         };
     };
+        keymap {
+                compatible = "zmk,keymap";
 
-    keymap {
-        compatible = "zmk,keymap";
+                default_layer {
+// -----------------------------------------------------------------------------------------
+// |  Q  |  W  |  E  |  R  |  T  |     |  Y  |  U   |  I   |  O   | P |
+// |  A  |  S  |  D  |  F  |  G  |     |  H  |  J   |  K   |  L   | ' | 
+// |  Z  |  X  |  C  |  V  |  B  |     |  N  |  M   | CTRL | META | . |
+//             | GUI | LWR | SPC |     | ENT | RSE  | BSPC |
+                        display-name = "Base";
+                        bindings = <
+   AS(Q) AS(W) AS(E) AS(R) AS(T)     AS(Y)   AS(U)  AS(I)     AS(O)     AS(P)
+   AS(A) AS(S) AS(D) AS(F) AS(G)     AS(H)   AS(J)  AS(K)     AS(L)     AS(SQT)
+   AS(Z) AS(X) AS(C) AS(V) AS(B)     AS(N)   AS(M)  &kp LCTL  &kp RALT  AS(DOT)
+        &kp LGUI &mo 1 &kp SPACE     AS(RET) &mo 2  &kp BSPC
+                        >;
+                };
 
-        default_layer {
-            display-name = "Base";
-            bindings = <
-                &as &kp LS(Q) &kp Q   &as &kp LS(W) &kp W   &as &kp LS(E) &kp E   &as &kp LS(R) &kp R   &as &kp LS(T) &kp T
-                &as &kp LS(Y) &kp Y   &as &kp LS(U) &kp U   &as &kp LS(I) &kp I   &as &kp LS(O) &kp O   &as &kp LS(P) &kp P
+                lower_layer {
+// -----------------------------------------------------------------------------------------
+// | !     |  @  |  #  |  $  |  %  |     |  ^  |  &  |  *  |  (  |  )  |
+// | BT1   | BT2 | BT3 | BT4 | BT5 |     | LFT | DWN |  UP | RGT |     |
+// | BTCLR |     |     |     |     |     |     |     |     |     |     |
+//               | GUI |     | SPC |     | ENT | ESC | TAB |
+                        display-name = "Lower";
+                        bindings = <
+   &kp EXCL     &kp AT       &kp HASH     &kp DLLR     &kp PRCNT        &kp CARET &kp AMPS  &kp KP_MULTIPLY &kp LPAR  &kp RPAR
+   &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4     &kp LEFT  &kp DOWN  &kp UP          &kp RIGHT &trans 
+   &bt BT_CLR   &trans       &trans       &trans       &trans           &trans    &trans    &trans          &trans    &trans 
+                             &kp LGUI     &trans       &kp SPACE        AS(RET)   &kp ESC   &kp TAB
+                        >;
+                };
 
-                &as &kp LS(A) &kp A   &as &kp LS(S) &kp S   &as &kp LS(D) &kp D   &as &kp LS(F) &kp F   &as &kp LS(G) &kp G
-                &as &kp LS(H) &kp H   &as &kp LS(J) &kp J   &as &kp LS(K) &kp K   &as &kp LS(L) &kp L   &as &kp LS(APOSTROPHE) &kp APOSTROPHE
+                raise_layer {
+// -----------------------------------------------------------------------------------------
+// | 1! |  2@ |  3# |  4$ |  5% |     |  6^ |  7& |  8* |  9(  |  0)  |
+// | -_ |  =+ |  {  |  [  |  (  |     |  )  |  ]  |  }  |  /?  |  \|  |
+// | `~ |     |     |  ,< |  :  |     |  ;  |  .> | CTRL| META |      |
+//            | GUI | ESC | SPC |     | ENT |     | TAB |
+                        display-name = "Raise";
+                        bindings = <
 
-                &as &kp LS(Z) &kp Z   &as &kp LS(X) &kp X   &as &kp LS(C) &kp C   &as &kp LS(V) &kp V   &as &kp LS(B) &kp B
-                &as &kp LS(N) &kp N   &as &kp LS(M) &kp M   &kp LCTL       &kp RALT              &as &kp LS(DOT) &kp DOT
+   AS(N1)    AS(N2)    AS(N3)    AS(N4)    AS(N5)        AS(N6)    AS(N7)    AS(N8)    AS(N9)   AS(N0)
+   AS(MINUS) AS(EQUAL) &kp LBRC  &kp LBKT  &kp LPAR      &kp RPAR  &kp RBKT  &kp RBRC  AS(FSLH) AS(BSLH)
+   AS(GRAVE) &trans    &trans    AS(COMMA) &kp COLON     &kp SEMI  AS(DOT)   &kp LCTRL &kp RALT &trans
+                       &kp LGUI  &kp ESC   &kp SPACE     AS(RET)   &trans    &kp TAB
+                        >;
+                };
 
-                                &kp LGUI    &mo 1     &kp SPACE      &kp ENTER     &mo 2        &kp BSPC
-            >;
+                extra_1 {
+                        status = "reserved";
+                };
+
+                extra_2 {
+                        status = "reserved";
+                };
+
+                extra_3 {
+                        status = "reserved";
+                };
         };
-
-        lower_layer {
-            display-name = "Lower";
-            bindings = <
-                &kp EXCL      &kp AT       &kp HASH     &kp DLLR     &kp PRCNT          &kp CARET    &kp AMPS  &kp ASTRK  &kp LPAR   &kp RPAR
-                &bt BT_SEL 0  &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4       &kp LEFT     &kp DOWN  &kp UP     &kp RIGHT  &trans
-                &bt BT_CLR    &trans       &trans       &trans       &trans             &trans       &trans    &trans     &trans     &trans
-                               &kp LGUI    &trans       &kp SPACE    &kp ENTER          &kp ESC      &kp TAB
-            >;
-        };
-
-        raise_layer {
-            display-name = "Raise";
-            bindings = <
-                &as &kp LS(N1) &kp N1   &as &kp LS(N2) &kp N2   &as &kp LS(N3) &kp N3   &as &kp LS(N4) &kp N4   &as &kp LS(N5) &kp N5
-                &as &kp LS(N6) &kp N6   &as &kp LS(N7) &kp N7   &as &kp LS(N8) &kp N8   &as &kp LS(N9) &kp N9   &as &kp LS(N0) &kp N0
-
-                &as &kp LS(MINUS) &kp MINUS   &as &kp LS(EQUAL) &kp EQUAL   &kp LBRC   &kp LBKT   &kp LPAR
-                &kp RPAR          &kp RBKT    &kp RBRC         &as &kp LS(SLASH) &kp SLASH     &as &kp LS(BSLH) &kp BSLH
-
-                &as &kp LS(GRAVE) &kp GRAVE   &trans           &trans       &as &kp LS(COMMA) &kp COMMA     &kp COLON
-                &kp SEMI          &as &kp LS(DOT) &kp DOT       &kp LCTRL     &kp RALT        &trans
-
-                             &kp LGUI   &kp ESC   &kp SPACE     &kp ENTER     &trans          &kp TAB
-            >;
-        };
-
-        extra_1 {
-            status = "reserved";
-        };
-
-        extra_2 {
-            status = "reserved";
-        };
-
-        extra_3 {
-            status = "reserved";
-        };
-    };
 };
